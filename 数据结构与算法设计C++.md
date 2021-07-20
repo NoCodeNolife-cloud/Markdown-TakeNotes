@@ -1266,7 +1266,33 @@ int findComplement(int num) {
 }
 ```
 
+# 八皇后
+
+![image-20210720181359786](E:\programe\GitHub project warehouse manager\Markdown-TakeNotes\数据结构与算法设计C++.assets\image-20210720181359786.png)
+
+![image-20210720181409874](E:\programe\GitHub project warehouse manager\Markdown-TakeNotes\数据结构与算法设计C++.assets\image-20210720181409874.png)
+
+![image-20210720181418302](E:\programe\GitHub project warehouse manager\Markdown-TakeNotes\数据结构与算法设计C++.assets\image-20210720181418302.png)
+
+## 实例
+
+![image-20210720181438966](E:\programe\GitHub project warehouse manager\Markdown-TakeNotes\数据结构与算法设计C++.assets\image-20210720181438966.png)
+
+# 寻径
+
+![image-20210720183144716](E:\programe\GitHub project warehouse manager\Markdown-TakeNotes\数据结构与算法设计C++.assets\image-20210720183144716.png)
+
+![image-20210720183210579](E:\programe\GitHub project warehouse manager\Markdown-TakeNotes\数据结构与算法设计C++.assets\image-20210720183210579.png)
+
+![image-20210720183228983](E:\programe\GitHub project warehouse manager\Markdown-TakeNotes\数据结构与算法设计C++.assets\image-20210720183228983.png)
+
+![image-20210720183238490](E:\programe\GitHub project warehouse manager\Markdown-TakeNotes\数据结构与算法设计C++.assets\image-20210720183238490.png)
+
+![image-20210720183311822](E:\programe\GitHub project warehouse manager\Markdown-TakeNotes\数据结构与算法设计C++.assets\image-20210720183311822.png)
+
 # 判断是非为n的幂
+
+
 
 ```cpp
 bool isPowerOfN(int num,int n) {
