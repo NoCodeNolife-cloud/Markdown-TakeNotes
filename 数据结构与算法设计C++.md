@@ -6061,6 +6061,101 @@ public:
 };
 ```
 
+# 1029. 寻找最便宜的航行旅途（最多经过k个中转站）
+
+描述
+
+有n个城市被一些航班所连接。每个航班 (u,v,w) 从城市u出发，到达城市v，价格为w。
+
+给定城市数目 `n`，所有的航班`flights`。你的任务是找到从起点`src`到终点站`dst`的最便宜线路的价格，而旅途中最多只能中转`K`次。
+
+如果没有找到合适的线路，返回 `-1`。
+
+总城市数 `n` 在 1-100 之间，每个城市被标号为 0 到 n-1。航线的总数在 0 到 n * (n - 1) / 2 之间每条航线会被以 [出发站，终点站，价格] 的形式展现。每条航线的价格都在 1-10000之间。中转站的总数限制范围为 0 到 n-1 之间。不会有重复或者自环航线出现
+
+样例
+
+**样例 1:**
+
+```
+输入: 
+  n = 3,
+  flights = [[0,1,100],[1,2,100],[0,2,500]],
+  src = 0, dst = 2, K = 0
+输出: 500
+```
+
+**样例 2:**
+
+```
+输入: 
+  n = 3,
+  flights = [[0,1,100],[1,2,100],[0,2,500]],
+  src = 0, dst = 2, K = 1
+输出: 200
+```
+
+```cpp
+class Solution {
+public:
+    /**
+     * @param n: a integer
+     * @param flights: a 2D array
+     * @param src: a integer
+     * @param dst: a integer
+     * @param K: a integer
+     * @return: return a integer
+     */
+    int findCheapestPrice(int n, vector<vector<int>> &flights, int src, int dst, int K) {
+        
+        unordered_map<int, vector<int>> outdegrees;
+        
+        for (int i = 0; i < flights.size(); ++i) {
+            outdegrees[flights[i][0]].push_back(i);
+        }
+        
+        queue<pair<int, int>> que; //flight and money
+
+        int k = 0, ans = INT_MAX;
+        
+        for (int i = 0; i < outdegrees[src].size(); ++i) {
+            que.push(make_pair(outdegrees[src][i], 0));
+        }
+        
+        unordered_map<int, int> memo;
+        
+        while (!que.empty() && k <= K) {
+            int size = que.size();
+            for (int i = 0; i < size; ++i) {
+                int curr_f = que.front().first;
+                int start = flights[curr_f][0];
+                int end = flights[curr_f][1];
+                int curr_mon = que.front().second + flights[curr_f][2];
+                que.pop();
+                if (memo.find(end) == memo.end()) {
+                    memo[end] = curr_mon;
+                }
+                else {
+                    if (memo[end] <= curr_mon) {
+                        continue;
+                    }
+                    memo[end] = curr_mon;
+                }
+                if (end == dst) {
+                    ans = min(ans, curr_mon);
+                }
+                for (int j = 0; j < outdegrees[end].size(); ++j) {
+                    que.push(make_pair(outdegrees[end][j], curr_mon));
+                }
+            }
+            k++;
+        }
+        
+        return ans == INT_MAX ? -1 : ans;
+    }
+};
+```
+
 # 1033. BST中的最小差值
 
 描述
