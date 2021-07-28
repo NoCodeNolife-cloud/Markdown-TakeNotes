@@ -772,7 +772,123 @@ v所有的后代及其之间的联边称作子树(subtree) ,记作subtree(v).在
 
 PFC编码方案可由PFC编码树来描述，由编码树不仅可以快速生成编码表，而且直接支持高效的解码
 
+## 二叉树的实现
 
+### 二叉树节点
+
+![image-20210728161319868](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728161319868.png)
+
+![image-20210728161836104](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728161836104.png)
+
+![image-20210728161846052](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728161846052.png)
+
+### 二叉树
+
+### BinTree模板类
+
+
+
+![image-20210728162016004](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728162016004.png)
+
+![image-20210728162027473](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728162027473.png)
+
+### 高度更新
+
+![image-20210728162149685](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728162149685.png)
+
+### 节点插入
+
+![image-20210728162255109](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728162255109.png)
+
+![image-20210728162801598](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728162801598.png)
+
+### 子树接入
+
+![image-20210728163255163](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728163255163.png)
+
+![image-20210728163454419](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728163454419.png)
+
+### 子树删除
+
+![image-20210728163842973](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728163842973.png)
+
+### 子树分离
+
+![image-20210728164503704](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728164503704.png)
+
+## 遍历
+
+### 递归式遍历
+
+![image-20210728165112899](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728165112899.png)
+
+#### 先序遍历
+
+![image-20210728165526927](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728165526927.png)
+
+![image-20210728165556490](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728165556490.png)
+
+#### 后序遍历
+
+![image-20210728165637993](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728165637993.png)
+
+![image-20210728165650620](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728165650620.png)
+
+#### 中序遍历
+
+![image-20210728165713210](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728165713210.png)
+
+![image-20210728165722269](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728165722269.png)
+
+### 迭代版先序遍历
+
+![image-20210728185424198](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728185424198.png)
+
+![image-20210728183945353](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728183945353.png)
+
+![image-20210728183952915](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728183952915.png)
+
+### 迭代版中序遍历
+
+![image-20210728192520476](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728192520476.png)
+
+![image-20210728184126374](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728184126374.png)
+
+#### 直接后继及其定位
+
+![image-20210728184908579](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728184908579.png)
+
+![image-20210728185209467](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728185209467.png)
+
+![image-20210728185226625](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728185226625.png)
+
+![image-20210728192941910](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728192941910.png)
+
+### 迭代版后序遍历
+
+![image-20210728193216880](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728193216880.png)
+
+![image-20210728185306170](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728185306170.png)
+
+![image-20210728185316766](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728185316766.png)
+
+### **层次遍历**
+
+![image-20210728193653956](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728193653956.png)
+
+![image-20210728193724752](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728193724752.png)
+
+#### 完全二叉树
+
+![image-20210728194314622](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728194314622.png)
+
+完全二叉树的实例，及其一般性的宏观拓扑结构特征：叶节点只能出现在最底部的两层，且最底层叶节点均处于次底层叶节点的左侧
+
+#### 满二叉树
+
+所有叶节点同处于最底层（非底层节点均为内部节点）
+
+![image-20210728194559711](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210728194559711.png)
 
 # 冒泡算法	bubbleSort
 
@@ -6013,6 +6129,61 @@ public:
 };
 ```
 
+# 557. 字符计数
+
+描述
+
+对一个字符串中的字符进行计数, 返回一个hashmap, key为字符, value是这个字符出现的次数.
+
+样例
+
+例1:
+
+```
+输入:
+str = "abca"
+
+输出:
+{
+  "a": 2,
+  "b": 1,
+  "c": 1
+}
+```
+
+例2:
+
+```
+输入:
+str = "ab"
+
+输出:
+{
+  "a": 1,
+  "b": 1
+}
+```
+
+```java
+public class Solution {
+    /*
+     * @param str: a string
+     * @return: Return a hash map
+     */
+    public Map<Character, Integer> countCharacters(String str) {
+        Map<Character, Integer> res = new HashMap<Character, Integer>();
+        for (int i = 0; i < str.length(); i++) {
+            char temp = str.charAt(i);
+            if (res.containsKey(temp)) {
+                res.put(temp, res.get(temp) + 1);
+            } else {
+                res.put(temp, 1);
+            }
+        }
+        return res;
+    }
+}
+```
 
 # 987.  具有交替位的二进制数
 
