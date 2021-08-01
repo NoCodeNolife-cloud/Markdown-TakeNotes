@@ -5509,6 +5509,16 @@ buttonGrop.add(r);
 *    JTable(Object[][] rowData, Object[] columnNames)：通过二维数组和指定列名，创建一个表格对象，rowData是表格中的数据，columnNames是列名。
 *    JTable(int numRows, int numColumns)：指定行和列数创建一个空的表格对象。
 
+### 生成Swing窗口
+
+* 调用类中的main方法
+
+```java
+public static void main(String[] args) {    
+    new MainGUI().main(null);
+}
+```
+
 ## JavaFX
 
 *    JavaFX是开发丰富互联网应用程序（Rich Internet Application，缩写RIA）的图形用户界面技术，JavaFX期望能够在桌面应用的开发领域与Adobe公司的AIR、微软公司的Silverlight相竞争。
