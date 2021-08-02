@@ -1033,6 +1033,46 @@ BFS()的每一步迭代，都先从Q中取出当前的首顶点v；再逐一核�
 
 BFS()遍历结束后，所有访问过的顶点通过parent[]指针依次联接，从整体上给出了原图某一连通或可达域的一棵遍历树，称作广度优先搜索树，或简称BFS树（BFS tree）。
 
+![image-20210801182517188](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210801182517188.png)
+
+### 复杂度
+
+除作为输入的图本身外，BFS搜索所使用的空间，主要消耗在用于维护顶点访问次序的辅助队列、用于记录顶点和边状态的标识位向量，累计$\sigma(n) + \sigma(n) + \sigma(e) = \sigma(n + e)$​。
+
+时间方面，首先需花费$\sigma(n + e)$​​​​​时间复位所有顶点和边的状态。不计对子函数BFS()的调用，bfs()本身对所有顶点的枚举共需$\sigma(n)$​​​时间。而在对BFS()的所有调用中，每个顶点、每条边均只耗费$\sigma(1)$​​时间，累计$\sigma(n + e)$​。综合起来，BFS搜索总体仅需$\sigma(n + e)$时间。
+
+## 深度优先搜索
+
+深度优先搜索（Depth-First Search, DFS）选取下一顶点的策略，可概括为：
+
+<center>优先选取最后一个被访问到的顶点的邻居</center>
+
+于是，以顶点s为基点的DFS搜索，将首先访问顶点s；再从s所有尚未访问到的邻居中任取其一，并以之为基点，递归地执行DFS搜索。故各顶点被访问到的次序，类似于树的先序遍历。
+
+### 实现
+
+![image-20210801185818847](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210801185818847.png)
+
+算法的实质功能，由子算法DFS()递归地完成。每一递归实例中，都先将当前节点v标记为DISCOVERED（已发现）状态，再逐一核对其各邻居u的状态并做相应处理。待其所有邻居均已处理完毕之后，将顶点v置为VISITED（访问完毕）状态，便可回溯。
+
+若顶点u尚处于UNDISCOVERED（未发现）状态，则将边(v, u)归类为树边（tree edge），并将v记作u的父节点。此后，便可将u作为当前顶点，继续递归遍历。
+
+若顶点u处于DISCOVERED状态，则意味着在此处发现一个有向环路。此时，在DFS遍历树中u必为v的祖先，故应将边(v, u)归类为后向边（back edge）
+
+这里为每个顶点v都记录了被发现的和访问完成的时刻，对应的时间区间[dTime(v),  fTime(v)]均称作v的活跃期（active duration）。实际上，任意顶点v和u之间是否存在祖先/后代的“血缘”关系，完全取决于二者的活跃期是否相互包含。
+
+对于有向图，顶点u还可能处于VISITED状态。此时，只要比对v与u的活跃期，即可判定在DFS树中v是否为u的祖先。若是，则边(v, u)应归类为前向边（forward edge）；否则，二者必然来自相互独立的两个分支，边(v, u)应归类为跨边（cross edge）。
+
+DFS(s)返回后，所有访问过的顶点通过parent[]指针依次联接，从整体上给出了顶点s所属连通或可达分量的一棵遍历树，称作深度优先搜索树或DFS树（DFS tree）。与BFS搜索一样，此时若还有其它的连通或可达分量，则可以其中任何顶点为基点，再次启动DFS搜索。最终，经各次DFS搜索生成的一系列DFS树，构成了DFS森林（DFS forest）
+
+![image-20210801192250062](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210801192250062.png)
+
+![image-20210801192420460](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210801192420460.png)
+
+
+
+
+
 # 冒泡算法	bubbleSort
 
 ```cpp
@@ -6378,6 +6418,81 @@ public class Solution {
     }
 }
 ```
+
+# 900. 二叉搜索树中最接近的值
+
+描述
+
+给一棵非空二叉搜索树以及一个target值，找到在BST中最接近给定值的节点值
+
+给出的目标值为浮点数我们可以保证只有唯一一个最接近给定值的节点
+
+样例
+
+**样例1**
+
+```
+输入: root = {5,4,9,2,#,8,10} and target = 6.124780
+输出: 5
+解释：
+二叉树 {5,4,9,2,#,8,10}，表示如下的树结构：
+        5
+       / \
+     4    9
+    /    / \
+   2    8  10
+```
+
+**样例2**
+
+```
+输入: root = {3,2,4,1} and target = 4.142857
+输出: 4
+解释：
+二叉树 {3,2,4,1}，表示如下的树结构：
+     3
+    / \
+  2    4
+ /
+1
+```
+
+```cpp
+/**
+ * Definition of TreeNode:
+ * class TreeNode {
+ * public:
+ *     int val;
+ *     TreeNode *left, *right;
+ *     TreeNode(int val) {
+ *         this->val = val;
+ *         this->left = this->right = NULL;
+ *     }
+ * }
+ */
+
+class Solution {
+public:
+    /**
+     * @param root: the given BST
+     * @param target: the given target
+     * @return: the value in the BST that is closest to the target
+     */
+    int closestValue(TreeNode * root, double target) {
+        // write your code here
+        int closest = root->val;
+        while (root) {
+            if (abs(closest - target) >= abs(root->val - target)) {
+                closest = root->val;
+            }
+            root = target < root->val ? root->left : root->right;
+        }
+        return closest;        
+    }
+};
+```
+
+
 
 # 987.  具有交替位的二进制数
 
