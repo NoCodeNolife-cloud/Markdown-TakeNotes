@@ -6,7 +6,6 @@
   * CodeGlance
   * IDE Eval Reset
   * Key Promoter X
-  * Kite AI Code AutoComplete
   * Rainbow Brackets
 * 自动换行
   * setting->Editor->Code Style->C/C++->Wrapping and Braces
