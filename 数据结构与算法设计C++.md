@@ -1324,9 +1324,9 @@ void quickSort(vector<T>& vec, int left, int right) {
 }
 ```
 
-# 归并排序
+## 归并排序
 
-## 有序向量的二路归并
+### 有序向量的二路归并
 
 与起泡排序通过反复调用单趟扫描交换类似,归并排序也可以理解为是通过反复调用所谓二路归并(2-way merge)算法而实现的.所谓二路归并,就是将两个有序序列合并成为一个有序序列.归并排序所需的时间,也主要决定于各趟二路归并所需时间的总和
 
@@ -1334,11 +1334,11 @@ void quickSort(vector<T>& vec, int left, int right) {
 
 ![image-20210712194741462](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210712194741462.png)
 
-## 分治策略
+### 分治策略
 
 ![image-20210712195001135](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210712195001135.png)
 
-## 二路归并接口的实现
+### 二路归并接口的实现
 
 ![image-20210712195418030](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210712195418030.png)
 
@@ -7647,6 +7647,91 @@ public:
         }
         if (check(nums, left, threshold)) return left;
         return right;
+    }
+};
+```
+
+# 2506. 删除不匹配的括号
+
+描述
+
+你将得到一个由小写字母 `a-z` ，左括号 `'('` 和右括号 `')'` 构成的字符串 `s`。
+你的任务是删除**尽可能少**的括号，使得 `s` 里面的括号匹配。
+你需要返回删除括号后的字符串。
+由于答案可能会有很多，所以你只需要返回任意一个正确答案。
+
+例如：`"()"`, `"(())"`, `"()()"`, `"(())()"` 是括号匹配的字符串， 而 `")("`, `"(()"`, `"()()("`, `"()())"` 则是括号不匹配的字符串。
+
+没有括号的字符串（如：`abcd`）或空串 `""` 也算一个括号匹配的字符串。0 \leq0≤ `s` 的长度 \leq 10^5≤105你**只能**对原串进行**括号删除**的操作，其他操作将**不被允许**。
+
+样例
+
+**样例1：**
+
+输入：
+
+```
+s = "a(b(c(de)fgh)"
+```
+
+输出：
+
+```
+"a(b(cde)fgh)"
+```
+
+解释：
+
+正确答案有三个："ab(c(de)fgh)"，"a(bc(de)fgh)"，"a(b(cde)fgh)"。
+你只需要返回任何一个。
+
+**样例2：**
+
+输入：
+
+```
+s = "((("
+```
+
+输出：
+
+```
+""
+```
+
+解释：
+
+空串也属于括号匹配的字符串。
+
+```cpp
+class Solution {
+public:
+    /**
+     * @param s: A string with lowercase letters and parentheses
+     * @return: A string which has been removed invalid parentheses
+     */
+    string removeParentheses(string &s) {
+        stack<int> stk;
+        for (int i = 0; i < s.size(); ) {
+            if (s[i] == '(') {
+                stk.push(i);
+                i++;
+            } else if (s[i] == ')') {
+                if (!stk.empty()) {
+                    stk.pop();
+                    i++;
+                }else{
+                    s.erase(i,1);
+                }
+            }else{
+                i++;
+            }
+        }
+        while (!stk.empty()) {
+            s.erase(stk.top(), 1);
+            stk.pop();
+        }
+        return s;
     }
 };
 ```
