@@ -3992,6 +3992,92 @@ public:
 };
 ```
 
+# 47. 主元素 II
+
+描述
+
+给定一个整型数组，找到主元素，它在数组中的出现次数大于数组元素个数的三分之一。
+
+数组中只有唯一的主元素
+
+样例
+
+**样例 1：**
+
+输入：
+
+```
+nums = [99,2,99,2,99,3,3]
+```
+
+输出：
+
+```
+99
+```
+
+解释：
+
+99出现了3次
+**样例 2：**
+
+输入：
+
+```
+nums = [1, 2, 1, 2, 1, 3, 3]
+```
+
+输出：
+
+```
+1
+```
+
+解释：
+
+1出现了3次
+
+挑战
+
+要求时间复杂度为O(n)*O*(*n*)，空间复杂度为O(1)*O*(1)。
+
+```cpp
+class Solution {
+public:
+    /*
+     * @param nums: a list of integers
+     * @return: The majority number that occurs more than 1/3
+     */
+    int majorityNumber(vector<int> &nums) {
+        sort(nums.begin(), nums.end());
+        pair<int,int>cnt(nums[0],1);
+        pair<int,int>res=cnt;
+        for (int i = 1; 1; i++) {
+            if (cnt.first == nums[i]) {
+                cnt.second++;
+            } else {
+                if (res.second<cnt.second) {
+                    res.first=cnt.first;
+                    res.second=cnt.second;
+                }
+                cnt.first=nums[i];
+                cnt.second=1;
+            }
+            if(i==nums.size()){
+                if (res.second<cnt.second) {
+                    res.first=cnt.first;
+                    res.second=cnt.second;
+                }
+                break;
+            }
+        }
+        return res.first;
+    }
+};
+```
+
+
+
 # 50. 数组剔除元素后的乘积
 
 给定一个整数数组A.
@@ -6349,6 +6435,79 @@ public:
 };
 ```
 
+# 267. 最短休息日
+
+描述
+
+由于业绩优秀，公司给小Q放了 n 天的假，身为工作狂的小Q打算在假期中工作、锻炼或者休息。他有个奇怪的习惯：不会连续两天工作或锻炼。只有当公司营业时，小Q才能去工作，只有当健身房营业时，小Q才能去健身，小Q一天只能干一件事。给出假期中公司，健身房的营业情况，求小Q最少需要休息几天
+
+1为营业 0为不营业
+
+样例
+
+**样例 1:**
+
+```
+输入:  company=[1,1,0,0],gym=[0,1,1,0]
+输出: 2
+样例解释: 小Q可以在第一天工作，第二天或第三天健身，小Q最少休息2天。
+```
+
+```cpp
+class Solution {
+public:
+    /**
+     * @param company: Company business
+     * @param gym: Gym business
+     * @return: Find the shortest rest day
+     */
+    int minimumRestDays(vector<int> &company, vector<int> &gym) {
+        if (company.empty() || (company.size() != gym.size()))
+            return -1;
+
+        // dp size: (n, 3)
+        // dp[i][0] :work
+        // dp[i][1] :exercise
+        // dp[i][2] :rest
+        vector<vector<int>> dp(2);
+        for (vector<vector<int>>::size_type i = 0; i != 2; i++)
+            for (vector<int>::size_type j = 0; j != 3; j++)
+                dp[i].push_back(INT_MAX);
+
+        if (company[0] == 1) {
+            dp[0][0] = 0;
+            dp[1][0] = 0;
+        }
+        if (gym[0] == 1) {
+            dp[0][1] = 0;
+            dp[1][1] = 0;
+        }
+
+        dp[0][2] = 1;
+        dp[1][2] = 1;
+
+        for (vector<vector<int>>::size_type i = 1; i != company.size(); i++) {
+            for (vector<int>::size_type j = 0; j != 3; j++)
+                dp[1][j] = INT_MAX;
+
+            if (company[i] == 1) {
+                dp[1][0] = min(dp[0][1], dp[0][2]);
+            }
+            if (gym[i] == 1) {
+                dp[1][1] = min(dp[0][0], dp[0][2]);
+            }
+            dp[1][2] = min(min(dp[0][0], dp[0][1]), dp[0][2]) + 1;
+
+            for (vector<int>::size_type j = 0; j != 3; j++)
+                dp[0][j] = dp[1][j];
+        }
+        return min(min(dp[1][0], dp[1][1]), dp[1][2]);
+    }
+};
+```
+
+
+
 # 302. 数字配对
 
 描述
@@ -6584,6 +6743,118 @@ private:
         dfs(root -> left, target - root -> val, path, res);
         dfs(root -> right, target - root -> val, path, res);
         path.pop_back();
+    }
+};
+```
+
+# 395. 硬币排成线 II
+
+描述
+
+有 `n` 个不同价值的硬币排成一条线。两个参赛者轮流从 **左边** 依次拿走 1 或 2 个硬币，直到没有硬币为止。计算两个人分别拿到的硬币总价值，价值高的人获胜。
+
+请判定 **先手玩家** 必胜还是必败?
+
+若必胜, 返回 `true`, 否则返回 `false`.
+
+样例
+
+**样例 1:**
+
+```
+输入: [1, 2, 2]
+输出: true
+解释: 先手玩家直接拿走两颗硬币即可.
+```
+
+**样例 2:**
+
+```
+输入: [1, 2, 4]
+输出: false
+解释: 无论先手拿一个还是两个, 后手可以拿完, 然后总价值更高.
+```
+
+*l**e**n*表示硬币数组的长度，下标从 0 开始
+
+用一个数组`dp[i]` 表示从`i`到`len-1` 能拿到的最大值
+
+一个明显的情况就是当`len<=2`时，这时候先手拿的只要全拿走就行了，所以肯定是先手赢。然后我们分析
+
+- 当`i=len`的时候，`dp[len]`没得可拿，所以`dp[len]=0`
+
+- 当`i=len-1`的时候，`dp[len-1]`只有一个可以拿，所以`dp[len-1] = values[len-1]`;
+
+- 当`i = len-2`的时候，`dp[len-2]`有两个可拿，当然是直接拿走,所以`dp[len-2] = values[len-1]+values[len-2]`;
+
+- 当`i=len-3`的时候，剩下最后三个，这时候如果拿一个，对方就会拿走两个，所以，这次要拿两个，所以`dp[len-3] = values[len-2]+ values[len-3]`;
+
+- 当
+
+  ```
+  i = len-4
+  ```
+
+  以及以后的情况中，显然可以选择拿一个或者拿两个两种情况，我们自然是选择拿最多的那个作为
+
+  ```
+  dp
+  ```
+
+  的值，那么我们就分分析这两种情况：
+
+  - 第一种，只拿一个,那么对手可能拿两个或者一个，对手肯定是尽可能多拿，所以我们要选择尽可能小的那个，所以`dp[i] = values[i] + min(dp[i+2],dp[i+3])`
+  - 第二种，拿两个，同样的情况，`dp[i] = values[i]+ values[i+1]+min(dp[i+3],dp[i+4])`
+  - 然后我们取这两种情况下的最大值。
+
+- `dp[0]`表示先手获得的最大值，`sum-dp[0]`表示后手获得的最大值，比较两者即可判断先手是否必胜
+
+ 
+
+## 复杂度分析
+
+- 时间复杂度
+
+  ```
+  O(n)
+  ```
+
+  - `n`为硬币的数量
+
+- 空间复杂度
+
+  ```
+  O(n)
+  ```
+
+  - `n`为硬币的数量
+
+```cpp
+class Solution {
+public:
+    /*
+     * @param : a vector of integers
+     * @return: a boolean which equals to true if the first player will win
+     */
+    bool firstWillWin(vector<int> values) {
+        int size = values.size();
+        if (size <= 2) {
+            return true;
+        }
+        vector<int> dp(size + 1, 0);
+        int sum = 0;
+        dp[size - 1] = values[size - 1]; // i=len-1时,只有一个可以拿
+        dp[size - 2] = values[size - 1] + values[size - 2]; // i = len-2,有两个可拿，直接拿走
+        dp[size - 3] = values[size - 2] + values[size - 3]; // 当i=len-3的时候，剩下最后三个，这时候如果拿一个，对方就会拿走两个，所以这次拿两个
+        sum += (values[size - 1] + values[size - 2] + values[size - 3]);
+        // 当i = len-4以及以后的情况中，显然可以选择拿一个或者拿两个两种情况，我们自然是选择拿最多的那个作为`dp`的值
+        for (int i = size - 4; i >= 0; i--) {
+            sum += values[i];
+            dp[i] = max(values[i] + min(dp[i + 2], dp[i + 3]),//只拿一个,那么对手可能拿两个或者一个，对手肯定是尽可能多拿，所以我们要选择尽可能小的那个
+             values[i] + values[i + 1] + min(dp[i + 3], dp[i + 4]));//拿两个，同样的情况
+        }
+        // 由于硬币总数是确定的，我们比较一下先手的硬币dp[0]和后手的硬币数量sum-dp[0]就能得到答案 
+        return dp[0] > sum - dp[0];
     }
 };
 ```
@@ -6966,6 +7237,108 @@ public class Solution {
     }
 }
 ```
+
+# 657. O(1)实现数组插入/删除/随机访问
+
+描述
+
+设计一个数据结构实现在平均 `O(1)` 的复杂度下执行以下所有的操作。
+
+- `insert(val)`: 如果这个元素不在set中，则插入。
+- `remove(val)`: 如果这个元素在set中，则从set中移除。
+- `getRandom`: 随机从set中返回一个元素。每一个元素返回的可能性必须相同。
+
+样例
+
+```
+// 初始化空集set
+RandomizedSet randomSet = new RandomizedSet();
+
+// 1插入set中。返回正确因为1被成功插入
+randomSet.insert(1);
+
+// 返回错误因为2不在set中
+randomSet.remove(2);
+
+// 2插入set中，返回正确，set现在有[1,2]。
+randomSet.insert(2);
+
+// getRandom 应该随机的返回1或2。
+randomSet.getRandom();
+
+// 从set中移除1，返回正确。set现在有[2]。
+randomSet.remove(1);
+
+// 2已经在set中，返回错误。
+randomSet.insert(2);
+
+// 因为2是set中唯一的数字，所以getRandom总是返回2。
+randomSet.getRandom();
+```
+
+```cpp
+class RandomizedSet {
+public:
+    vector<int> arr;
+    unordered_map<int,int> value_to_index;
+    RandomizedSet() {
+        // do intialization if necessary
+    }
+
+    /*
+     * @param val: a value to the set
+     * @return: true if the set did not already contain the specified element or false
+     */
+    bool insert(int val) {
+        // write your code here
+        if(value_to_index.count(val)!=0){
+            return false;
+        }
+        arr.push_back(val);
+        value_to_index[val]=arr.size()-1;
+        return true;
+    }
+
+    /*
+     * @param val: a value from the set
+     * @return: true if the set contained the specified element or false
+     */
+    bool remove(int val) {
+        // write your code here
+        if(arr.size()==0||value_to_index.count(val)==0){
+            return false;
+        }
+        int index=value_to_index[val];
+        if (index==arr.size()-1){
+            arr.pop_back();
+            value_to_index.erase(val);
+            return true;
+        }
+        arr[index]=arr[arr.size()-1];
+        value_to_index.erase(arr[arr.size()-1] );
+        arr.pop_back();
+        return true;
+    }
+
+    /*
+     * @return: Get a random element from the set
+     */
+    int getRandom() {
+        // write your code here
+        return arr[rand()%arr.size()];
+    }
+};
+
+/**
+ * Your RandomizedSet object will be instantiated and called as such:
+ * RandomizedSet obj = new RandomizedSet();
+ * bool param = obj.insert(val);
+ * bool param = obj.remove(val);
+ * int param = obj.getRandom();
+ */
+```
+
+
 
 # 900. 二叉搜索树中最接近的值
 
