@@ -1896,7 +1896,13 @@ vector<int> primes(int n) {
 }
 ```
 
-# 最小公约数
+# 最大公约数GCD
+
+公式：
+$$
+gcd(a,b)=gcd(b,a\%b)
+$$
+
 
 ```cpp
 //辗转相除法求最大公约数函数
@@ -2000,7 +2006,7 @@ int gcd1(int a, int b) {
 }
 ```
 
-# 最大公倍数
+# 最小公倍数LCM
 
 ```cpp
 int lcm(int m, int n)
@@ -2026,6 +2032,8 @@ int lcm(int m, int n)
 	}
 }
 ```
+
+
 
 # 进制转换
 
@@ -4901,6 +4909,101 @@ public:
 };
 ```
 
+# 85. 在二叉查找树中插入节点
+
+描述
+
+给定一棵二叉查找树和一个新的树节点，将节点插入到树中。
+
+你需要保证该树仍然是一棵二叉查找树。
+
+保证不会出现重复的值
+
+样例
+
+**样例 1：**
+
+输入：
+
+```
+tree = {}
+node= 1
+```
+
+输出：
+
+```
+{1}
+```
+
+解释：
+
+在空树中插入一个点，应该插入为根节点。
+
+**样例 2：**
+
+输入：
+
+```
+tree = {2,1,4,#,#,3}
+node = 6
+```
+
+输出：
+
+```
+{2,1,4,#,#,3,6}
+```
+
+解释：
+
+如下:
+2               2
+/  \             /  \
+1   4     -->    1    4
+/                / \
+3                3   6
+
+挑战
+
+能否不使用递归？
+
+```cpp
+/**
+ * Definition of TreeNode:
+ * class TreeNode {
+ * public:
+ *     int val;
+ *     TreeNode *left, *right;
+ *     TreeNode(int val) {
+ *         this->val = val;
+ *         this->left = this->right = NULL;
+ *     }
+ * }
+ */
+class Solution {
+public:
+    /**
+     * @param root: The root of the binary search tree.
+     * @param node: insert this node into the binary search tree
+     * @return: The root of the new binary search tree.
+     */
+    TreeNode* insertNode(TreeNode* root, TreeNode* node) {
+        if (root == NULL) {
+            return node;
+        }
+        if (node->val < root->val) {
+            root->left = insertNode(root->left, node);
+            return root;
+        }
+        root->right = insertNode(root->right, node);
+        return root;
+    }
+};
+```
+
+
+
 # 93.  平衡二叉树
 
 描述
@@ -6295,6 +6398,71 @@ public:
 };
 ```
 
+# 184. 最大数
+
+描述
+
+给出一组非负整数，重新排列他们的顺序把他们组成一个最大的整数。
+
+最后的结果可能很大，所以我们返回一个字符串来代替这个整数。
+
+样例
+
+**样例 1:**
+
+```
+输入:[1, 20, 23, 4, 8]
+输出:"8423201"
+```
+
+**样例 2:**
+
+```
+输入:[4, 6, 65]
+输出:"6654"
+```
+
+挑战
+
+在 O(nlogn) 的时间复杂度内完成。
+
+```c++
+class Solution {
+public:
+    /**
+     * @param nums: A list of non negative integers
+     * @return: A string
+     */
+    string largestNumber(vector<int> &nums) {
+        string res;
+        vector<string> temp;
+        for (int item:nums) {
+            temp.push_back(to_string(item));
+        }
+        sortVector(temp);
+        for (string item:temp) {
+            res += item;
+        }
+        if (atoi(res.c_str()) == 0) {
+            return "0";
+        }
+        return res;
+    }
+
+    void sortVector(vector<string> &vec) {
+        for (int i = 0; i < vec.size(); i++) {
+            for (int j = 0; j < vec.size() - i - 1; j++) {
+                if (vec[j + 1] + vec[j] > vec[j] + vec[j + 1]) {
+                    swap(vec[j + 1], vec[j]);
+                }
+            }
+        }
+    }
+};
+```
+
+
+
 # 185.  矩阵的之字型遍历
 
 描述
@@ -7413,6 +7581,66 @@ public:
 };
 ```
 
+# 914. 翻转游戏
+
+描述
+
+翻转游戏：给定一个只包含两种字符的字符串：`+`和`-`。你可以将两个**连续的**`“++”`翻转成`"--"`，你需要翻转一次，并找到翻转后所有可能得到的结果。
+
+编写一个程序，找到字符串在一次有效翻转后的所有可能状态。
+
+样例
+
+**样例1**
+
+```
+输入: s = "++++"
+输出: 
+[
+  "--++",
+  "+--+",
+  "++--"
+]
+```
+
+**样例2**
+
+```
+输入: s = "---+++-+++-+"
+输出: 
+[
+	"---+++-+---+",
+	"---+++---+-+",
+	"---+---+++-+",
+	"-----+-+++-+"
+]
+```
+
+```cpp
+class Solution {
+public:
+    /**
+     * @param s: the given string
+     * @return: all the possible states of the string after one valid move
+     */
+    vector<string> generatePossibleNextMoves(string &s) {
+        vector<string> res;
+        if(s.empty()){
+            return res;
+        }
+        for (int i = 0; i < s.size() - 1; i++) {
+            if (s[i] == '+' and s[i + 1] == '+') {
+                string temp = s;
+                temp[i] = temp[i + 1] = '-';
+                res.push_back(temp);
+            }
+        }
+
+        return res;
+    }
+};
+```
+
 
 
 # 987.  具有交替位的二进制数
@@ -8009,6 +8237,118 @@ public:
     }
 };
 ```
+
+# 1150. 分数加法和减法
+
+描述
+
+给定表示分数加法和减法表达式的字符串，你需要以字符串格式返回计算结果。 最终结果应该是不可简化的分数。 如果您的最终结果是整数，例如2，则需要将其更改为具有分母1的分数格式。因此，在这种情况下，2应转换为2/1。
+
+输入字符串仅包含'0'到'9'，'/'，'+'和' - '。 输出也是如此。
+每个分数（输入和输出）具有±分子/分母的格式。 如果第一个输入分数或输出为正，则省略'+'。
+输入仅包含有效的不可约分数，其中每个分数的分子和分母将始终在[1,10]范围内。 如果分母为1，则表示该分数实际上是上面定义的分数格式的整数。
+给定分数的数量将在[1,10]范围内。
+最终结果的分子和分母保证有效且在32位int范围内。
+
+样例
+
+```
+输入:"-1/2+1/2"
+输出: "0/1"
+
+输入:"-1/2+1/2+1/3"
+输出: "1/3"
+
+输入:"1/3-1/2"
+输出: "-1/6"
+
+输入:"5/3+1/3"
+输出: "2/1"
+```
+
+```cpp
+class Solution {
+public:
+    /**
+     * @param expression: a string
+     * @return: return a string
+     */
+    string fractionAddition(string &expression) {
+        string res;
+        vector<vector<int>> cnt = split(expression);
+        int count1 = cnt[0][0], count2 = cnt[0][1];
+        for (int i = 1; i < cnt.size(); i++) {
+            if (count2 == cnt[i][1]) {
+                count1 += cnt[i][0];
+                int time1=gcd(count1,count2);
+                count1=count1/time1;
+                count2=count2/time1;
+            } else {
+                int time = lcm(count2, cnt[i][1]);
+                count1 = (time / count2) * count1 + (time / cnt[i][1]) * cnt[i][0];
+                count2 = time;
+                int time1=gcd(count1,count2);
+                count1=count1/time1;
+                count2=count2/time1;
+            }
+        }
+        if(count1*count2<0){
+            count1=-abs(count1);
+            count2=abs(count2);
+        }
+        if (count1 == 0) {
+            return "0/1";
+        } else {
+            res = to_string(count1) + "/" + to_string(count2);
+            return res;
+        }
+    }
+
+    vector<vector<int>> split(string &str) {
+        vector<vector<int>> res;
+        vector<string> cnt;
+        for (int pos = 0, pos1 = 0; pos < str.size(); pos = pos1) {
+            pos1 = str.find_first_of("+-", pos + 1);
+            if (pos1 == string::npos) {
+                string temp(str.begin() + pos, str.end());
+                cnt.push_back(temp);
+                break;
+            }
+            string temp(str.begin() + pos, str.begin() + pos1);
+            cnt.push_back(temp);
+        }
+        for (int i = 0; i < cnt.size(); i++) {
+            string temp1(cnt[i].begin(), cnt[i].begin() + cnt[i].find_first_of('/'));
+            string temp2(cnt[i].begin() + cnt[i].find_first_of('/') + 1, cnt[i].end());
+            vector<int> tempvec;
+            tempvec.push_back(atoi(temp1.c_str()));
+            tempvec.push_back(atoi(temp2.c_str()));
+            res.push_back(tempvec);
+        }
+        return res;
+    }
+
+    int lcm(int m, int n) {
+        int max = (m > n) ? m : n;
+        while (true) {
+            if (max % m == 0 && max % n == 0) {
+                return max;
+            }
+            max++;
+        }
+    }
+
+    int gcd(int a, int b) {
+        if (a % b == 0) {
+            return b;
+        } else {
+            gcd(b, a % b);
+        }
+    }
+};
+```
+
+
 
 # 1178. 学生出勤记录 I
 
