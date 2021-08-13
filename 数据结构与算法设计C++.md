@@ -1608,66 +1608,37 @@ void quickSort(vector<T>& vec, int left, int right) {
 ![image-20210712195418030](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210712195418030.png)
 
 ```cpp
-
-template<typename T>
-void Merge(vector<T>& vec, int beginPos, int midPos, int endPos)
-{
-	int leftLen, rightLen, i, j, k;
-	leftLen = midPos - beginPos + 1;
-	rightLen = endPos - midPos;
-	T* leftArr = new T[leftLen];
-	T* rightArr = new T[rightLen];
- 
-	// 数组分别保存左右两边数据
-	for (i = 0; i < leftLen; i++)
-	{
-		leftArr[i] = vec[beginPos + i];
-	}
- 
-	for (j = 0; j < rightLen; j++)
-	{
-		rightArr[j] = vec[midPos + 1 + j];
-	}
- 
-	i = j = 0;
-	k = beginPos;
-	// 接下来从左右两数组比较合并
-	while (i < leftLen && j < rightLen)
-	{
-		if (leftArr[i] <= rightArr[j])
-		{
-			vec[k++] = leftArr[i++];
-		}
-		else
-		{
-			vec[k++] = rightArr[j++];
-		}
-	}
- 
-	for (; i < leftLen; i++)		// 如果左数组还有剩余，则将剩余元素合并到vec
-	{
-		vec[k++] = leftArr[i];
-	}
-	for (; j < rightLen; j++)		// 如果右数组还有剩余，则将剩余元素合并到vec
-	{
-		vec[k++] = rightArr[j];
-	}
- 
-	delete[] leftArr;
-	delete[] rightArr;
+void Merge(vector<int> &vec, int left, int middle, int right) {
+    vector<int> temp;
+    int i = left, j = middle + 1;
+    while (i <= middle and j <= right) {
+        if (vec[i] < vec[j]) {
+            temp.push_back(vec[i]);
+            i++;
+        } else {
+            temp.push_back(vec[j]);
+            j++;
+        }
+    }
+    while (j <= right) {
+        temp.push_back(vec[j++]);
+    }
+    while (i <= middle) {
+        temp.push_back(vec[i++]);
+    }
+    for (int i = 0; i < temp.size(); i++) {
+        vec[left + i] = temp[i];
+    }
 }
- 
-template<typename T>
-void MergeSort(vector<T>& vec, int beginPos, int endPos)
-{
-	int midPos;
-	if (beginPos < endPos)
-	{
-		midPos = (beginPos + endPos) / 2;
-		MergeSort(vec, beginPos, midPos);		// 递归拆分左半边数组
-		MergeSort(vec, midPos + 1, endPos);		// 递归拆分右半边数组
-		Merge(vec, beginPos, midPos, endPos);		// 合并数组
-	}
+
+void MergeSort(vector<int> &vec, int left, int right) {
+    if (left == right) {
+        return;
+    }
+    int middle = (left + right) / 2;
+    MergeSort(vec, left, middle);
+    MergeSort(vec, middle + 1, right);
+    Merge(vec, left, middle, right);
 }
 ```
 
