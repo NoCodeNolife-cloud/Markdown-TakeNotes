@@ -2055,53 +2055,35 @@ int lcm(int m, int n)
 }
 ```
 
-
-
 # 进制转换
+
+## 二进制转十进制
+
+```cpp
+/// 二进制转十进制
+/// \param number 二进制数
+/// \return 十进制数
+int binaryToDecimal(int number){
+    int res=0;
+    string str= to_string(number);
+    for(int i=0;i<str.size();i++){
+        res=res*2+str[i]-'0';
+    }
+    return res;
+}
+```
 
 ## 十进制转二进制
 
 ```cpp
-/// <summary>
-/// get Binary
-/// </summary>
-/// <param name="x">Decimalism value</param>
-/// <returns>vector of the Binary Code</returns>
-vector<int> getBinary(int x){
-    vector<int>res(32,0);
-    if(x>=0){
-        int i=0;
-        while(x!=0){
-            res[31-i]=x%2;
-            x/=2;
-            i++;
-        }
-    }
-    else{
-        x=abs(x);
-        int i=0;
-        while(x!=0){
-            res[31-i]=x%2;
-            x/=2;
-            i++;
-        }
-        for(int i=0;i<32;i++){
-            if(res[i]==0){
-                res[i]=1;
-            }
-            else{
-                res[i]=0;
-            }
-        }
-        for(int i=31;i>=0;i--){
-            if(res[i]==0){
-                res[i]=1;
-                break;
-            }
-            else{
-                res[i]=0;
-            }
-        }
+/// 十进制转二进制
+/// \param number 十进制数
+/// \return 二进制数
+int decimalToBinary(int number) {
+    int res = 0;
+    string str = to_string(number);
+    for (int i = 0; i < str.size(); i++) {
+        res += (str[i] - '0') * pow(2, str.size() - i - 1);
     }
     return res;
 }
@@ -2110,31 +2092,165 @@ vector<int> getBinary(int x){
 ## 十进制转十六进制
 
 ```cpp
-/// <summary>
-/// get Hex
-/// </summary>
-/// <param name="x">Hex value</param>
-/// <returns>vector of the Hex Code</returns>
-string toHex(int num) {
-    if(num==0){
-        return "0";
+/// 十进制转十六进制
+/// \param number 十进制数
+/// \return 十六进制数
+string decimalToHexadecimal(int number) {
+    string temp[] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e"};
+    string str;
+    while (number != 0) {
+        str.insert(0, temp[number % 16]);
+        number /= 16;
     }
-    int len=0;
-    string ans="";
-    while(num&&len<8){
-        int bit=num&15;
-        if(bit<10){
-            ans=(char)('0'+bit)+ans;
-        }
-        else{
-            ans=(char)('a'+bit-10)+ans;
-        }
-        num>>=4;
-        len++;
-    }
-    return ans;
+    return str;
 }
 ```
+
+## 十六进制转十进制
+
+```cpp
+/// 十六进制转十进制
+/// \param number 十六进制
+/// \return 十进制
+int decimalToHexadecimal(string number) {
+    long long res = 0;
+    for(int i=0;i<number.size();i++){
+        if(number[i]<'a'){
+            res=res*16+number[i]-'0';
+        }else{
+            res=res*16+number[i]-'a';
+        }
+    }
+    return res;
+}
+```
+
+## 八进制转十进制
+
+```cpp
+/// 八进制转十进制
+/// \param number 八进制数
+/// \return 十进制数
+int octalToDecimal(int number) {
+    int res = 0;
+    string str = to_string(number);
+    for (int i = 0; i < str.size(); i++) {
+        res = res * 8 + str[i] - '0';
+    }
+    return res;
+}
+```
+
+## 十进制转八进制
+
+```cpp
+/// 十进制转八进制
+/// \param number 十进制数
+/// \return 八进制数
+int decimalToOctal(int number) {
+    string res;
+    while (number != 0) {
+        string temp= to_string(number%8);
+        res.insert(0,temp);
+        number /= 8;
+    }
+    return atoi(res.c_str());
+}
+```
+
+## 二进制转八进制
+
+```cpp
+/// 二进制转八进制
+/// \param number 二进制
+/// \return 八进制数
+int binaryToOctal(int number) {
+    int res = 0;
+    string str = to_string(number);
+    while (str.size() % 3 != 0) {
+        str.insert(0, "0");
+    }
+    for (int i = 0; i < str.size(); i = i + 3) {
+        int temp = 0;
+        temp = (str[i] - '0') * 4 + (str[i + 1] - '0') * 2 + (str[i + 2] - '0');
+        res = res * 10 + temp;
+    }
+    return res;
+}
+```
+
+## 八进制转二进制
+
+```cpp
+/// 八进制转二进制
+/// \param number 八进制
+/// \return 二进制
+string octalToBinary(int number) {
+    string res;
+    string temp = to_string(number);
+    for (int i = temp.size() - 1; i >= 0; i--) {
+        int value = temp[i] - '0';
+        while (value != 0) {
+            res.insert(0, to_string(value % 2));
+            value /= 2;
+        }
+    }
+    return res;
+}
+```
+
+## 二进制转十六进制
+
+```cpp
+/// 二进制转十六进制
+/// \param number 二进制
+/// \return 十六进制
+string binaryToHexadecimal(long long number) {
+    string res;
+    string str = to_string(number);
+    while (str.size() % 4 != 0) {
+        str.insert(0, "0");
+    }
+    for (int i = 0; i < str.size(); i += 4) {
+        int temp = (str[i] - '0') * 8 + (str[i + 1] - '0') * 4 + (str[i + 2] - '0') * 2 + str[i + 3] - '0';
+        if (temp < 10) {
+            res.push_back(temp + '0');
+        } else {
+            res.push_back(temp + 'a' - 10);
+        }
+    }
+    return res;
+}
+```
+
+## 十六进制转二进制
+
+```cpp
+/// 十六进制转二进制
+/// \param number 十六进制
+/// \return 二进制
+string hexadecimalToBinary(string number) {
+    string res;
+    for (int i = number.size() - 1; i >= 0; i--) {
+        int temp = number[i] - '0';
+        if (temp > 10) {
+            temp = number[i] - 'a' + 10;
+        }
+        while (temp != 0) {
+            res.insert(0, to_string(temp % 2));
+            temp /= 2;
+        }
+        if(i!=0){
+            while(res.size()%4!=0){
+                res.insert(0,"0");
+            }
+        }
+    }
+    return res;
+}
+```
+
+
 
 # 补数
 
