@@ -1455,12 +1455,6 @@ AVL树与常规的二叉搜索树一样，也应支持插入、删除等动态�
 ## 冒泡算法	bubbleSort
 
 ```cpp
-/// <summary>
-/// sort vector from greater to less
-/// </summary>
-/// <typeparam name="T">typename</typeparam>
-/// <param name="vec">vector parameter</param>
-/// <returns>result vector</returns>
 template<typename T>
 vector<T>bubbleSort(vector<T>vec) {
 	vector<T>res(vec);
@@ -1498,13 +1492,6 @@ void bubblesort1A(int A[], int n) {
 ## 选择排序	selectionSort
 
 ```cpp
-/// <summary>
-/// sort vector from greater to less
-/// </summary>
-/// <typeparam name="T">typename</typeparam>
-/// <param name="vec">vector parameter</param>
-/// <returns>result vector</returns>
-template<typename T>
 vector<T>selectionSort(vector<T>vec) {
 	vector<T>res(vec);
 	for (int i = 0; i < res.size(); i++) {
@@ -1523,12 +1510,6 @@ vector<T>selectionSort(vector<T>vec) {
 ## 插入排序	insertionSort
 
 ```cpp
-/// <summary>
-/// sort vector from greater to less
-/// </summary>
-/// <typeparam name="T">typename</typeparam>
-/// <param name="vec">vector parameter</param>
-/// <returns>result vector</returns>
 template<typename T>
 vector<T> insertionSort(vector<T> vec) {
 	vector<T>res(vec);
@@ -1547,67 +1528,75 @@ vector<T> insertionSort(vector<T> vec) {
 ## 快速排序	quickSort
 
 ```cpp
-/// <summary>
-/// sort vector from less to greater
-/// </summary>
-/// <typeparam name="T">typename</typeparam>
-/// <param name="vec">vector parameter</param>
-/// <returns>result vector</returns>
-template<typename T>
-vector<T>quickSort(vector<T> vec) {
-	vector<T>res(vec);
-	quickSort(res, 0, res.size() - 1);
-	return res;
-}
-template<typename T>
-void quickSort(vector<T>& vec, int left, int right) {
-	int middle = vec[(left + right) / 2];
-	int tleft = left, tright = right;
-	while (tleft <= tright) {
-		while (vec[tleft] < middle) {
-			tleft++;
-		}
-		while (middle < vec[tright]) {
-			tright--;
-		}
-		if (tleft <= tright) {
-			swap(vec[tleft], vec[tright]);
-			tleft++;
-			tright--;
-		}
-	}
-	if (tleft == tright) {
-		tleft++;
-	}
-	if (left < tright) {
-		quickSort(vec, left, tleft - 1);
-	}
-	if (tleft < right) {
-		quickSort(vec, tright + 1, right);
-	}
-	return;
+/// 快速排序
+/// \param vec 待排序数组
+/// \param left 左坐标
+/// \param right 右坐标
+void quickSort(vector<int> &vec, int left, int right) {
+    int middle = vec[(left + right) / 2];
+    int tleft = left, tright = right;
+    while (tleft <= tright) {
+        while (vec[tleft] < middle) {
+            tleft++;
+        }
+        while (middle < vec[tright]) {
+            tright--;
+        }
+        if (tleft <= tright) {
+            swap(vec[tleft], vec[tright]);
+            tleft++;
+            tright--;
+        }
+    }
+    if (tleft == tright) {
+        tleft++;
+    }
+    if (left < tright) {
+        quickSort(vec, left, tleft - 1);
+    }
+    if (tleft < right) {
+        quickSort(vec, tright + 1, right);
+    }
+    return;
 }
 ```
 
-## 归并排序
+## 归并排序 mergeSort
 
 ### 有序向量的二路归并
 
 与起泡排序通过反复调用单趟扫描交换类似,归并排序也可以理解为是通过反复调用所谓二路归并(2-way merge)算法而实现的.所谓二路归并,就是将两个有序序列合并成为一个有序序列.归并排序所需的时间,也主要决定于各趟二路归并所需时间的总和
 
 二路归并属于迭代式算法.每步迭代中,只需比较两个待归并向量的首元素,将小者取出并追加到输出向量的末尾,该元素在原向量中的后继则成为新的首元素.如此往复,直到某一向量为空.最后,将另一非空的向量整体接至输出向量的末尾
-
-![image-20210712194741462](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210712194741462.png)
+```cpp
+/// 二路已序数组归并算法
+/// \param vec1,vec2:已序数组
+/// \return 已序数组
+vector<int> mergeTwoVector(vector<int> &vec1, vector<int> &vec2) {
+    vector<int> res;
+    int len1 = vec1.size(), len2 = vec2.size();/*长度*/
+    int i = 0, j = 0;/*当前坐标*/
+    while (i < len1 && j < len2) {
+        if (vec1[i] < vec2[j]) {
+            res.push_back(vec1[i++]);
+        } else {
+            res.push_back(vec2[j++]);
+        }
+    }
+    while(i<len1){
+        res.push_back(vec1[i++]);
+    }
+    while(j<len2){
+        res.push_back(vec2[j++]);
+    }
+    return res;
+}
+```
 
 ### 分治策略
-
-![image-20210712195001135](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210712195001135.png)
-
-### 二路归并接口的实现
-
-![image-20210712195418030](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210712195418030.png)
-
+### 归并排序的实现
 ```cpp
+/// 数组排序
 void Merge(vector<int> &vec, int left, int middle, int right) {
     vector<int> temp;
     int i = left, j = middle + 1;
@@ -1631,14 +1620,15 @@ void Merge(vector<int> &vec, int left, int middle, int right) {
     }
 }
 
+/// 归并排序接口
 void MergeSort(vector<int> &vec, int left, int right) {
     if (left == right) {
         return;
     }
-    int middle = (left + right) / 2;
-    MergeSort(vec, left, middle);
+    int middle = (left + right);
+    MergeSort(vec, left, middle);//分割数组
     MergeSort(vec, middle + 1, right);
-    Merge(vec, left, middle, right);
+    Merge(vec, left, middle, right);//二路数组归并
 }
 ```
 
