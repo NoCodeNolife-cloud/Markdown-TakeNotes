@@ -1608,35 +1608,96 @@ void quickSort(vector<T>& vec, int left, int right) {
 ![image-20210712195418030](%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1C++.assets/image-20210712195418030.png)
 
 ```cpp
-void MergeSort(int arr[], int low, int high) {
-    if (low >= high) { return; } // 终止递归的条件，子序列长度为1
-    int mid = low + (high - low) / 2;  // 取得序列中间的元素
-    MergeSort(arr, low, mid);  // 对左半边递归
-    MergeSort(arr, mid + 1, high);  // 对右半边递归
-    Merge(arr, low, mid, high);  // 合并
-}
 
-void Merge(int *arr, int low, int mid, int high) {
-    //low为第1有序区的第1个元素，i指向第1个元素, mid为第1有序区的最后1个元素
-    int i = low, j = mid + 1, k = 0;  //mid+1为第2有序区第1个元素，j指向第1个元素
-    int *temp = new int[high - low + 1]; //temp数组暂存合并的有序序列
-    while (i <= mid && j <= high) {
-        if (arr[i] <= arr[j]) //较小的先存入temp中
-            temp[k++] = arr[i++];
-        else
-            temp[k++] = arr[j++];
-    }
-    while (i <= mid)//若比较完之后，第一个有序区仍有剩余，则直接复制到t数组中
-        temp[k++] = arr[i++];
-    while (j <= high)//同上
-        temp[k++] = arr[j++];
-    for (i = low, k = 0; i <= high; i++, k++)//将排好序的存回arr中low到high这区间
-        arr[i] = temp[k];
-    delete[]temp;//释放内存，由于指向的是数组，必须用delete []
+template<typename T>
+void Merge(vector<T>& vec, int beginPos, int midPos, int endPos)
+{
+	int leftLen, rightLen, i, j, k;
+	leftLen = midPos - beginPos + 1;
+	rightLen = endPos - midPos;
+	T* leftArr = new T[leftLen];
+	T* rightArr = new T[rightLen];
+ 
+	// 数组分别保存左右两边数据
+	for (i = 0; i < leftLen; i++)
+	{
+		leftArr[i] = vec[beginPos + i];
+	}
+ 
+	for (j = 0; j < rightLen; j++)
+	{
+		rightArr[j] = vec[midPos + 1 + j];
+	}
+ 
+	i = j = 0;
+	k = beginPos;
+	// 接下来从左右两数组比较合并
+	while (i < leftLen && j < rightLen)
+	{
+		if (leftArr[i] <= rightArr[j])
+		{
+			vec[k++] = leftArr[i++];
+		}
+		else
+		{
+			vec[k++] = rightArr[j++];
+		}
+	}
+ 
+	for (; i < leftLen; i++)		// 如果左数组还有剩余，则将剩余元素合并到vec
+	{
+		vec[k++] = leftArr[i];
+	}
+	for (; j < rightLen; j++)		// 如果右数组还有剩余，则将剩余元素合并到vec
+	{
+		vec[k++] = rightArr[j];
+	}
+ 
+	delete[] leftArr;
+	delete[] rightArr;
+}
+ 
+template<typename T>
+void MergeSort(vector<T>& vec, int beginPos, int endPos)
+{
+	int midPos;
+	if (beginPos < endPos)
+	{
+		midPos = (beginPos + endPos) / 2;
+		MergeSort(vec, beginPos, midPos);		// 递归拆分左半边数组
+		MergeSort(vec, midPos + 1, endPos);		// 递归拆分右半边数组
+		Merge(vec, beginPos, midPos, endPos);		// 合并数组
+	}
 }
 ```
 
+## 堆排序
 
+堆排序是利用**堆**这种数据结构而设计的一种排序算法，堆排序是一种**选择排序，**它的最坏，最好，平均时间复杂度均为O(nlogn)，它也是不稳定排序。首先简单了解下堆结构。
+
+### 堆
+
+　　**堆是具有以下性质的完全二叉树：每个结点的值都大于或等于其左右孩子结点的值，称为大顶堆；或者每个结点的值都小于或等于其左右孩子结点的值，称为小顶堆。如下图：**
+
+![img](https://images2015.cnblogs.com/blog/1024555/201612/1024555-20161217182750011-675658660.png)
+
+同时，我们对堆中的结点按层进行编号，将这种逻辑结构映射到数组中就是下面这个样子
+
+![img](https://images2015.cnblogs.com/blog/1024555/201612/1024555-20161217182857323-2092264199.png)
+
+该数组从逻辑上讲就是一个堆结构，我们用简单的公式来描述一下堆的定义就是：
+
+**大顶堆：arr[i] >= arr[2i+1] && arr[i] >= arr[2i+2]**  
+
+**小顶堆：arr[i] <= arr[2i+1] && arr[i] <= arr[2i+2]**  
+
+再简单总结下堆排序的基本思路：
+
+　　**a.将无需序列构建成一个堆，根据升序降序需求选择大顶堆或小顶堆;**
+
+　　**b.将堆顶元素与末尾元素交换，将最大元素"沉"到数组末端;**
+
+　　**c.重新调整结构，使其满足堆定义，然后继续交换堆顶元素与当前末尾元素，反复执行调整+交换步骤，直到整个序列有序。**
 
 # sort函数
 
@@ -7506,7 +7567,55 @@ public:
  */
 ```
 
+# 744. 前K个偶数长度的回文数和
 
+描述
+
+给一整数 k, 得出前 k 个偶数长度的回文数和. 这里的偶数长度是指一个数字的位数为偶数.
+
+样例
+
+**样例1**
+
+```
+输入:  k = 3
+输出: 66
+解释:
+11 + 22 + 33  = 66 (前三个偶数长度的回文数和)
+```
+
+**样例2**
+
+```
+输入:  k = 10
+输出: 1496
+解释:
+11 + 22 + 33 + 44 + 55 + 66 + 77 + 88 + 99 + 1001 = 1496
+```
+
+```cpp
+class Solution {
+public:
+    /**
+     * @param k: Write your code here
+     * @return: the sum of first k even-length palindrome numbers
+     */
+    int sumKEven(int k) {
+        int res = 0;
+        for (int i = 0, n = 1; i < k; i++,n++) {
+            string temp;
+            string temp1;
+            temp1 = temp = to_string(n);
+            cout<<"temp1="<<temp1<<endl;
+            cout<<"temp2="<<temp<<endl;
+            reverse(temp1.begin(), temp1.end());
+            string temp2 = temp + temp1;
+            res+=atoi(temp2.c_str());
+        }
+        return res;
+    }
+};
+```
 
 # 900. 二叉搜索树中最接近的值
 
