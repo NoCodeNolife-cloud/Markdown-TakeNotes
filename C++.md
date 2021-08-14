@@ -1932,6 +1932,18 @@ private/protected/public
 
 ### 多态和虚函数
 
+> 首先你要明白C++为什么要引进虚函数这个机制，
+>
+> 虚函数就是在基类中被关键字virtual说明，并在派生类中重新定义的函数。虚函数的作用是允许在派生类中重新定义与基类同名的函数，并且可以通过基类指针或引用来访问基类和派生类中的同名函数。
+>
+> 从以上的定义来看，需函数简单的说就是为了让基类指针能够指向派生类中与基类同名的函数而引进的，举个简单的例子，1：你定义了一个“图形类”这样的基类，然后再类中定义了一个求图形周长的函数（不是虚函数）；2：现在再定义这个“图形类”的一个派生类“三角形类”，中也含有一个求三角形周长的函数（不是虚函数）；3：再定义一个这个“图形类”的一个派生类“矩形类”，中也含有一个求矩形周长的函数（不是虚函数）；4：现在回到主函数，你定义了这个“图形类”的一个指针（即基类的指针），<u>***根据C++的规定，基类的对象指针可以指向它的公有派生类的对象，但是当其指向公有的派生类对象时，它只能访问派生类中从基类继承来的成员，而不能访问公有派生类中定义的成员。***</u>
+>
+> 所以，你定义的这个指针是不能够指向“三角形”和“矩形”类中定义的那个周长函数，但是，如果你在基类中将这个周长函数定义为虚函数，则这样的代码是允许的，而且能够到达预期目的。
+>
+> 你想想你在基类中只定义一个基类指针，可以通过改变基类指针所指的对象（即派生类对象），就可以通过指针访问这个虚函数（虚函数的函数原型是一样的）而完成不同图形周长的计算和输出，显然，这是很值得提倡的，因为你只需“p->perimeter;”一个代码就能完成很多图形的工作。
+>
+> 总的来说就是虚函数就是为了让基类指针（或引用）能访问派生类中定义的成员。
+
 虚函数是面向对象程序设计思想中比较高级的概念.因为面向对象程序设计思想的核心是将编程过程中操作的数据作为对象处理,而对象是对世界万物的抽象,因此有一个重要的概念就是虚函数.
 
 虚函数类似现实世界的“种类”.相同的种类具有相同的行为,具体行为的执行方式,根据个体不同而有差别.
@@ -2514,6 +2526,142 @@ class MyClass{
 如果采用不含参数的、明确的constructor(构造函数)调用语法,基本型别会被初始化为零.
 
 这个特性可以确保我们在撰写template程序代码时,任何型别都有一个确切的初始值.
+
+## C++模板全特化、偏特化
+
+### C++模板
+
+```
+//模板函数
+template<typename T, class N> void func(T num1, N num2)
+{
+    cout << "num1:" << num1 << ", num2:" << num2 <<endl;
+}
+
+//模板类
+template<typename T, class N> class Test_Class
+{
+    static bool comp(T num1, N num2)
+    {
+        return (num1<num2)?true:false;
+    }
+};
+```
+
+### C++模板全特化
+
+特化其实就是特殊化的意思，在模板类里，所有的类型都是模板（template<class T>），而一旦我们将所有的模板类型T都明确化，并且写了一个类名与主模板类名相同的类，那么这个类就叫做全特化类。C++模板全特化之后已经失去了Template的属性了。
+
+示例
+
+```cpp
+//模板函数
+template<typename T, class N> void func(T num1, N num2)
+{
+    //cout << "num1:" << num1 << ", num2:" << num2 <<endl;
+}
+
+//模板类
+template<typename T, class N> class Test_Class
+{
+public:
+    static bool comp(T num1, N num2)
+    {
+        return (num1<num2)?true:false;
+    }
+};
+
+//全特化，模板函数
+template<> void func(int num1, double num2)
+{
+    cout << "num1:" << num1 << ", num2:" << num2 <<endl;
+}
+
+//全特化，模板类
+template<> class Test_Class<int, double>
+{
+public:
+    static bool comp(int num1, double num2)
+    {
+        return (num1<num2)?true:false;
+    }
+};
+```
+
+调用
+
+```
+func<int, double>(1, 2.0);
+Test_Class<int, double>::comp(1, 2.0);
+```
+
+注意：一个模板被称为全特化的条件：1.必须有一个主模板类  2.模板类型被全部明确化
+
+### C++模板偏特化
+
+上面对主版本模板和全特化进行了定义，那么偏特化就是介于二者之间的模板，它的模板名与主版本模板名相同，但是它的模板型中，有被明确化的部分和没有被明确化的部分。
+
+示例
+
+```cpp
+//模板函数
+template<typename T, class N> void func(T num1, N num2)
+{
+    //cout << "num1:" << num1 << ", num2:" << num2 <<endl;
+}
+
+//模板类
+template<typename T, class N> class Test_Class
+{
+public:
+    static bool comp(T num1, N num2)
+    {
+        return (num1<num2)?true:false;
+    }
+};
+
+//偏特化，模板函数
+template<class N> void func(int num1, N num2)
+{
+    cout << "num1:" << num1 << ", num2:" << num2 <<endl;
+}
+
+//偏特化，模板类
+template<class N> class Test_Class<int, N>
+{
+public:
+    static bool comp(int num1, double num2)
+    {
+        return (num1<num2)?true:false;
+    }
+};
+```
+
+调用
+
+```
+func<int, double>(1, 2.0);
+Test_Class<int, double>::comp(1, 2.0);
+```
+
+注意：偏特化的条件：1.必须有一个主模板   2.模板类型被部分明确化
+
+### 模板类调用优先级
+
+对主版本模板类、全特化类、偏特化类的调用优先级从高到低进行排序是：全特化类>偏特化类>主版本模板类。这样的优先级顺序对性能也是最好的。
+
+但是模板特化并不只是为了性能优化，更多是为了让模板函数能够正常工作，最典型的例子就是STL中的iterator_traits。algorithm中大多数算法通过iterator对象来处理数据，但是同时允许以指针代替iterator对象，这是为了支持C-Style Array。如果直接操作iterator，那么为了支持指针类型，每个函数都需要进行重载，因为指针没有::value_type类型。为了解决这个问题，STL使用了iterator_traits，并为指针类型进行转化，算法通过它来操作iterator，不需要知道实际操作的是iterator对象还是指针。
+
+```cpp
+template<typename IteratorClass> class iterator_traits
+...
+template<typename ValueType> class iterator_traits<ValueType*>
+...
+template<typename ValueType> class iterator_traits<ValueType const*>
+...
+```
+
+后面两是针对指针类型的偏特化，也是偏特化的一种常见形式。
 
 # 错误处理(Error)和异常(Exception)处理
 

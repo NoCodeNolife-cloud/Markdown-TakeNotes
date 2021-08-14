@@ -1887,6 +1887,109 @@ for (int i = 0; i < count.size(); i++) {
 }
 ```
 
+# 原码、反码、补码
+
+## 原码
+
+原码就是符号位加上真值的绝对值, 即用第一位表示符号, 其余位表示值. 比如如果是8位二进制:
+
+<center>[+1]原 = 0000 0001
+
+<center>[-1]原 = 1000 0001
+
+第一位是符号位. 因为第一位是符号位, 所以8位二进制数的取值范围就是:
+
+<center>[1111 1111 , 0111 1111]==>[-127 , 127]
+
+### 十进制数转原码
+
+```cpp
+/// 十进制数转原码
+/// \param number 十进制数
+/// \return 原码
+string getOriginalCode(int number) {
+    if (number > 127 || number < -127) {/*若溢出*/
+        return "";/*返回空串*/
+    }
+    string str(8, '0');
+    if (number < 0) {
+        str[0] = '1';
+        number = -number;
+    }
+    for (int i = 0; number != 0; i++) {
+        str[7 - i] = number % 2 + '0';
+        number /= 2;
+    }
+    return str;
+}
+```
+
+
+
+## 反码
+
+反码的表示方法是:
+
+- 正数的反码是其本身
+- 负数的反码是在其原码的基础上, 符号位不变，其余各个位取反.
+
+<center>[+1] = [00000001]原 = [00000001]反
+
+<center>[-1] = [10000001]原 = [11111110]反
+
+### 原码转反码
+
+```cpp
+/// 获得反码
+/// \param str 原码
+/// \return 反码
+string getRadixMinusOneComplement(string str) {
+    if (str[0] == '0') {
+        return str;
+    } else {
+        for (int i = 1; i < str.size(); i++) {
+            str[i] = (str[i] == '1') ? '0' : '1';
+        }
+    }
+    return str;
+}
+```
+
+
+
+## 补码
+
+补码的表示方法是:
+
+- 正数的补码就是其本身
+- 负数的补码是在其原码的基础上, 符号位不变, 其余各位取反, 最后+1. (即在反码的基础上+1)
+
+<center>[+1] = [00000001]原 = [00000001]反 = [00000001]补
+
+<center>[-1] = [10000001]原 = [11111110]反 = [11111111]补
+
+### 反码转补码
+
+```cpp
+/// 反码转补码
+/// \param str 反码
+/// \return 补码
+string getComplement(string str) {
+    if (str[0] == '0') {
+        return str;
+    } else {
+        for (int i = str.size() - 1; i >= 0; i--) {
+            if (str[i] == '1') {
+                str[i] = '0';
+            } else {
+                str[i] = '1';
+                return str;
+            }
+        }
+    }
+}
+```
+
 
 
 # 质数
