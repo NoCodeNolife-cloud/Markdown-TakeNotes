@@ -5628,7 +5628,7 @@ Strings定义了常用的IO操作符
 *    函数rfind()逆向(backward)搜索,并返回最后一个搜寻结果
 *    如果这些函数成功,就返回字特索引;否则返回string::npos
 
-##### 搜寻子字符串
+##### <u>***搜寻子字符串***</u>
 
 ###### size_type string::find (const string& str) const
 
@@ -5667,7 +5667,7 @@ Strings定义了常用的IO操作符
 *    如果这些函数成功,就返回子字符串的第一字符索引;否则返回string::npos
 *    chars必须包含至少chars_len个字符,字符可为任意值, '\0'无特殊含义
 
-##### 搜寻第一个匹配字符
+##### <u>***搜寻第一个匹配字符***</u>
 
 ###### size_type string::find_first_of (const string& str) const
 
