@@ -810,3 +810,93 @@ class Map{
 ## 例外情况
 
 只有在弄清楚了增加间接层次确实有好处之后,才能添加复杂性, Pimpl也是一样。(见第6条和第8条。)
+
+# 44. 优先编写非成员非友元函数
+
+尽可能将函数指定为非成员非友元函数。
+
+---
+
+非成员非友元函数通过尽量减少依赖提高了封装性:函数体不能依赖于类的非公用成员(见第11条)。它们还能够分离巨类,释放可分离的功能,进一步减少耦合(见第33条)。它们能够提高通用性,因为在不知道一个操作是否为某个给定类型的成员的情况下,很难编写模板(见第67条)。
+
+# 45. 总是一起提供new和delete
+
+每个类专门的重载void* operator new(parms)都必须与对应的重载void operator delete(void*, parms)相随相伴,其中parms是额外参数类型的一个列表(第一个总是std::size_t),数组形式的new[]和delete[]也同样如此。
+
+---
+
+很少需要提供自定义的new或者delete,但是如果需要其中一个,那么通常两个都需要。如果定义了类专门的T::operator new进行某种特殊的分配操作,很可能还需要定义一个类专门的T::operator delete进行相应的释放操作。
+
+编译器可能需要T::operator delete的重载,即使实际上从来也不会调用它。这才是为什么要成对提供operator new和operator delete (以及operator new[]和operator delete[])的原因。
+
+调用者能够用默认的分配器(使用new T)或者自定义的分配器(使用new(alloc) T,其中alloc是一个CustomAllocator类型的对象)来分配类型T的对象。
+
+惟一调用者可能调用的operator delete是默认的operator delete(size_t),因此当然应该实现,从而能够正确地释放已分配的内存
+
+## 例外情况
+
+operator new 的就地(in-place)形式:
+
+void * T::operator new(size_t, void * p) { return p;}
+
+并不需要对应的operator delete,因为没有进行真正的分配。我们测试过的所有编译器对void T::operator delete(void* , size_t, void*)都不会发出警告。
+
+# 46. 如果提供类专门的new,应该提供所有标准形式(普通、就地和不抛出）
+
+如果类定义了operator new的重载,则应该提供operator new所有三种形式—普通(plain),就地(in-place)和不抛出(nothrow)的重载。不然,类的用户就无法看到和使用它们。
+
+---
+
+很少需要提供自定义的new或者delete,但是如果确实需要,通常也不想隐藏内置的签名。
+
+C++中,在某个作用域(比如一个类作用域)里定义了一个名字之后,就会隐藏所有外围作用域中同样的名字,而且永远不会发生跨作用域的重载。当上述的名字是operator new时,需要特别小心,以免对类的客户产生不良影响。
+
+* 普通new
+
+```cpp
+void* operator new(std::size_t);
+```
+
+* 不抛出new
+
+```cpp
+void* operator new(std::size_t std::nothrow_t)throw();
+```
+
+* 就地new
+
+```cpp
+void* operator new(std::size_t ,void*);
+```
+
+应该让类C在作用域中显式地声明operator new的所有三种标准变体。通常,所有二种形式都有相同的可见性。(各个形式还可以将可见性设为private,比如要显式地禁用普通或者不抛出operator new,但是本条款的目的是提醒读者记住不要因为疏忽而隐藏它们。)
+
+请注意,应该总是避免隐藏就地new,因为它在STL容器中有广泛的使用
+
+最后一个技巧是:在两种不同的环境下,公开已隐藏的operator new需要采用两种不同的方式。如果类的基类也定义了operator new,那么要公开operator new所需做的就是:
+
+```cpp
+class C:public B{
+    public:
+    using B::operator new;
+};
+```
+
+否则,如果没有基类版本或者基类没有定义operator new,就需要写 些短小的转送函数(因为无法通过using从全局名字空间中9入名字):
+
+```cpp
+class C{
+    public:
+    static void* operator new(std::size_t s){
+        return ::operator new(s);
+    }
+    static void* operator new(std::size_t s,std::nothrow_t nt)throw(){
+        return ::operator new(s,nt);
+    }
+    static void* operator new(std::size_t s,void *p){
+        return ::operator new(s,p);
+    }
+};
+```
+
+避免在客户代码中调用new (nothrow)版本,但是仍然要为客户提供,以免客户一旦要用到时感到奇怪。
