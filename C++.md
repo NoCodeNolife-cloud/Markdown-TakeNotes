@@ -2180,7 +2180,7 @@ M1会增加编程的复杂程度,这种**复杂性主要是由于派生类通过
 
 ## 返回对象和返回引用
 
-如果函数返回在函数中创建的临时对象,则不要使用引用（&）
+`如果函数返回在函数中创建的临时对象,则不要使用引用（&）`
 
 如果函数返回的是通过引用或指针传递给它的对象,则应按引用返回对象
 
@@ -2224,13 +2224,7 @@ public:
 *    友元不具有继承性
 *    友元不具有传递性
 
-## operator 重载运算符
-
-```c++
-operator typename();//类型转换
-ostream& operator<<(ostream& _out,<object>& _name);//重载cout
-ofstream& operator<<(ofstream& _out,<object>& _name);//重载ofstream
-```
+## 重载、隐藏、重写
 
 ### 重载赋值运算符
 
@@ -2248,6 +2242,245 @@ public:
     }
 }
 ```
+
+### 重载（overload）
+
+重载的定义为：在同一作用域中，同名函数的形式参数（参数个数、类型或者顺序）不同时，构成函数重载。例如：
+
+```cpp
+class A
+{
+public:
+	int 	func(int a);
+	void 	func(int a, int b);4
+	void 	func(int a, int b, int c);    	
+	int 	func(char* pstr, int a);
+};
+```
+
+以上的四个函数均构成重载。
+
+需要注意的是：
+
+* 函数返回值类型与构成重载无任何关系
+* 类的静态成员函数与普通成员函数可以形成重载
+* 函数重载发生在同一作用域，如类成员函数之间的重载、全局函数之间的重载
+
+这里还需要注意一下 const重载：
+
+```cpp
+class D{
+public:
+	void funcA();				//1
+	void funcA() const;			//2
+	void funcB(int a);			//3
+	void funcB(const int a);	//4
+};
+```
+
+在类D 中 funcA 与 const funcA是合法的重载，而 两个 funcB 函数是非法的，不能通过编译。
+
+原因是：在类中，由于隐含的this形参的存在，const版本的function函数使得作为形参的this指针的类型变为指向const对象的指针，而非const版本的使得作为形参的this指针就是正常版本的指针。此处是发生重载的本质。
+
+调用规则：const对象默认调用const成员函数，非const对象默认调用非const成员函数；
+
+对于funcB，非引用传参，形参是否const是等价的。但是当使用引用传参时，有无const是不同的。使用指针传参时，指向const对象的指针和指向非const对象的指针做形参的函数是不同的。
+
+#### operator 重载运算符
+
+```c++
+operator typename();//类型转换
+ostream& operator<<(ostream& _out,<object>& _name);//重载cout
+ofstream& operator<<(ofstream& _out,<object>& _name);//重载ofstream
+```
+
+### 隐藏（hiding）
+
+隐藏定义：指不同作用域中定义的同名函数构成隐藏（不要求函数返回值和函数参数类型相同）。比如派生类成员函数隐藏与其同名的基类成员函数、类成员函数隐藏全局外部函数。
+例如：
+
+```cpp
+void hidefunc(char *pstr) {
+    cout << "global function: " << pstr << endl;
+}
+
+class HideA {
+public:
+    void hidefunc() {
+        cout << "HideA function" << endl;
+    }
+
+    void usehidefunc() {
+        //隐藏外部函数hidefunc，使用外部函数时要加作用域
+        hidefunc();
+        ::hidefunc("lvlv");
+    }
+};
+
+class HideB : public HideA {
+public:
+    void hidefunc() {
+        cout << "HideB function" << endl;
+    }
+
+    void usehidefunc() {
+        //隐藏基类函数hidefunc，使用外部函数时要加作用域
+        hidefunc();
+        HideA::hidefunc();
+    }
+};
+```
+
+隐藏的实质是；在函数查找时，名字查找先于类型检查。如果派生类中成员和基类中的成员同名，就隐藏掉。编译器首先在相应作用域中查找函数，如果找到名字一样的则停止查找。
+
+### 重写/覆盖（override）
+
+`重写的定义：派生类中与基类同返回值类型、同名和同参数的虚函数重定义，构成虚函数覆盖，也叫虚函数重写。`
+需要注意的是，这里有一个特殊情况，即协变返回类型。
+
+定义是：如果虚函数返回指针或者引用时（不包括value语义），子类中重写的函数返回的指针或者引用是父类中被重写函数所返回指针或引用的子类型。看示例代码：
+
+```cpp
+class Base {
+public:
+    virtual A &show() {
+        cout << "In Base" << endl;
+        return *(new A);
+    }
+};
+
+class Derived : public Base {
+public:
+    //返回值协变，构成虚函数重写
+    B &show() {
+        cout << "In Derived" << endl;
+        return *(new B);
+    }
+};
+```
+
+
+对比覆盖和隐藏，不难发现函数覆盖其实是函数隐藏的特例。如果派生类中定义了一个与基类虚函数同名但是参数列表不同的非virtual函数，则此函数是一个普通成员函数，并形成对基类中同名虚函数的隐藏，而非虚函数覆盖。
+
+隐藏是一个静态概念，它代表了标识符之间的一种屏蔽现象，而覆盖则是为了实现动态联编，是一个动态概念。
+
+### final和override说明符
+
+通过上面的介绍，我们知道派生类可以定义一个函数与基类中虚函数的名字相同但是形参列表不同的函数（隐藏）。编译器将认为新定义的这个函数与基类中原有的函数是相互独立的。
+
+`但是我们在写虚函数时，想让派生类中的虚函数覆盖掉基类虚函数，有时我们会不小心写错，造成了隐藏`，这不是我们想要看到的结果。所以C++ 11新标准中我们可以使用override关键字来说明派生类中的虚函数。
+
+`如果我们使用override标记了某个函数，但该函数并没有覆盖已存在的虚函数，此时编译器将报错。`
+
+```cpp
+class B {
+    virtual void f1(int) const;
+
+    virtual void f2();
+
+    void f3();
+};
+
+class C : B {
+    void f1(int) const override;    //正确，f1与基类中的f1匹配
+    void f2(int) override;        //错误：B没有形如f2（int）的函数
+    void f3() override;            //错误：f3不是虚函数
+    void f4() override;            //错误：B中没有名为f4的函数
+};
+```
+
+
+使用override是希望能覆盖基类中的虚函数，如果不符合则编译器报错。
+
+我们还能`把某个虚函数指点为 final ，意味着任何尝试覆盖该函数的操作都将引发错误`：
+
+```
+class D : B {
+    //从B继承 f2() 和 f3()，覆盖 f1( int )
+    void f1(int) const final; //不允许后续的其它类覆盖 f1（int）
+};
+
+class E : D {
+    void f2();                //正确：覆盖从间接类B继承而来的f2
+    void f1(int) const;    //错误：D已经将 f2 声明成 final
+};
+```
+
+final 和 override 说明符出现在形参列表以及尾置返回类型之后。
+
+final 还可以跟在类的后面，意思这个类不能当做其它类的基类。
+
+### 总结
+
+在讨论相关概念的区别时，抓住定义才能区别开来。C++中函数重载、隐藏和覆盖的区别并不难。
+
+在这里，牢记以下几点，就可区分函数重载、函数隐藏、函数覆盖和函数重写的区别：
+
+- 函数重载发生在相同作用域
+- 函数隐藏发生在不同作用域
+- 函数覆盖就是函数重写。准确地叫做虚函数覆盖和虚函数重写，也是函数隐藏的特例
+- 关于三者的对比，如下表所示：
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190321201942595.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTY0MDI5OA==,size_16,color_FFFFFF,t_70)
+
+```cpp
+class Base{
+public:
+    Base(){
+        cout<<"call Base construction"<<endl;
+    }
+
+    ~Base(){
+        cout<<"call Base destruction"<<endl;
+    }
+
+    virtual void function(){
+        cout<<"call Base function"<<endl;
+    }
+};
+
+class Override:public Base{
+public:
+    Override(){
+        cout<<"call override construction"<<endl;
+    }
+
+    ~Override(){
+        cout<<"call Override destrution"<<endl;
+    }
+
+    void function()override{
+        cout<<"override function"<<endl;
+    }
+};
+
+class Overload{
+public:
+    void function(int x){
+        cout<<"overload function"<<endl;
+    }
+
+    void funcion(double x){
+        cout<<"overload function"<<endl;
+    }
+};
+
+class Hide:public Overload{
+public:
+    void function(){
+        cout<<"hide function"<<endl;
+    }
+};
+
+class Final{
+public:
+    virtual void function()final{
+        cout<<"can't be override"<<endl;
+    }
+};
+```
+
+
 
 # 选择
 
