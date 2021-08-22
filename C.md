@@ -8,6 +8,21 @@
 * float类型能够保证7位有效数字
 * double类型能够保证15位有效数字
 
+## 数组长度
+
+```c
+int vec[]={....};
+int length=sizeof(vec)/sizeof(vec[0]);
+```
+
+### 数组声明
+
+```c
+int vec[<size>]={....};
+```
+
+
+
 # 输入
 
 ## scanf()
