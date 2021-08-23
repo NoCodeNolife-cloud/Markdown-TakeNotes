@@ -3265,3 +3265,11 @@ chkconfig redis on
 *    鸟哥的Linux私房菜-基础篇-第四版
 *    ARM嵌入式LINUX系统开发详解 第2版  弓雷著
 
+# 附录
+
+## 1. 查询函数
+
+```
+linux> man <函数名>
+```
+
