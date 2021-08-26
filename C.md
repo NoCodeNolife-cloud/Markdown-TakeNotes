@@ -21,7 +21,18 @@ int length=sizeof(vec)/sizeof(vec[0]);
 int vec[<size>]={....};
 ```
 
+### 二维数组声明
 
+```c
+int vec[<len>][<wide>]
+```
+
+#### 访问二维数组
+
+```c
+vec[i][j];
+*(*(vec + i) + j);
+```
 
 # 输入
 
