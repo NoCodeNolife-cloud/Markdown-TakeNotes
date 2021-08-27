@@ -2818,3 +2818,9 @@ int Open_listenfd(char *port)
 
 ```
 
+## 3. 挂载磁盘
+
+```
+mount /dev/sdb1 /home/cai/sdb1
+```
+
